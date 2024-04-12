@@ -4,10 +4,18 @@
  */
 package com.mycompany.tpbancaire.entity;
 
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 
 /**
@@ -15,13 +23,24 @@ import java.io.Serializable;
  * @author rakot
  */
 @Entity
+@Table(name = "CompteBancaire")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT c FROM CompteBancaire c"),
+    @NamedQuery(name = "CompteBancaire.findByCompteBancaireId", query = "SELECT c FROM CompteBancaire c WHERE c.id = :id")
+})
 public class CompteBancaire implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "ID")
     private Long id;
+    @Size(max = 30)
+    @Column(name = "NOM")
     private String nom;
+    @Column(name = "SOLDE")
     private int solde;
     
     public CompteBancaire(){}
