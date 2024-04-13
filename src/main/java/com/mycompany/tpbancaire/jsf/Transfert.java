@@ -5,6 +5,7 @@
 package com.mycompany.tpbancaire.jsf;
 
 import com.mycompany.tpbancaire.entity.CompteBancaire;
+import com.mycompany.tpbancaire.jsf.util.Util;
 import com.mycompany.tpbancaire.service.GestionnaireCompte;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.RequestScoped;
@@ -54,10 +55,29 @@ public class Transfert {
     }
     
     public String valider() {
+        boolean erreur = false;
         CompteBancaire source=bean.findById(idSource);
         CompteBancaire destinataire=bean.findById(idDestination);
+        if(source==null){
+            Util.messageErreur("Aucun compte avec cet id !\", \"Aucun compte avec cet id !\", \"form:source");
+            erreur=true;
+        }else if(source.getSolde()<montant){
+            Util.messageErreur("(Source) n'a pas assez de fond pour la transaction!");
+            erreur=true;
+        }else if(destinataire==null){
+            Util.messageErreur("Aucun compte avec cet id !\", \"Aucun compte avec cet id !\", \"form:destinataire");
+            erreur=true;
+        }else if(montant<0){
+            Util.messageErreur("Vous devez mettre un montant correct!");
+            erreur=true;
+        }
+        String lien="listeComptes";
+        if(erreur){
+            return null;
+        }
         bean.transferer(source, destinataire, montant);
-        return "listeComptes";
+        Util.addFlashInfoMessage("Le transfert de "+montant+"Euro de "+source.getNom()+" vers "+destinataire.getNom()+" est bien effectué!");
+        return lien;
     }
     
 }
