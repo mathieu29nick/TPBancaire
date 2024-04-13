@@ -96,7 +96,7 @@ public class AjoutEtRetrait implements Serializable {
                 erreur=true;
             }
         }
-        String link = "listeComptes";
+        String link = "listeComptes?faces-redirect=true";
         if(erreur){
             return null;
         }

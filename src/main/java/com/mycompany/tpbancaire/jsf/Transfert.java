@@ -71,7 +71,7 @@ public class Transfert {
             Util.messageErreur("Vous devez mettre un montant correct!");
             erreur=true;
         }
-        String lien="listeComptes";
+        String lien="listeComptes?faces-redirect=true";
         if(erreur){
             return null;
         }

@@ -46,12 +46,20 @@
                                 </f:facet>
                                 <h:outputText value="#{item.nom}"/>
                             </p:column>
-                            
+
                             <p:column sortBy="#{item.solde}" filterBy="#{item.solde}">
                                 <f:facet name="header">
                                     <h:outputText value="Solde"/>
                                 </f:facet>
                                 <h:outputText value="#{item.solde}"/>
+                            </p:column>
+                            <p:column>
+                                <f:facet name="header">
+                                    <h:outputText value=""/>
+                                </f:facet>
+                                <p:commandLink action="#{listeComptes.supprimerCompte(item)}">
+                                    <h:graphicImage name="images/delete.png" styleClass="icone" width="30" height="30"/>
+                                </p:commandLink>
                             </p:column>
                         </p:dataTable>
                     </h:form>
