@@ -34,9 +34,9 @@ import java.util.List;
         }
 )
 
-@Named(value="gestionnairecompte")
+@Named(value = "gestionnairecompte")
 @ApplicationScoped
-public class GestionnaireCompte implements Serializable{
+public class GestionnaireCompte implements Serializable {
 
     @PersistenceContext(unitName = "banquePU")
     private EntityManager em;
@@ -56,4 +56,21 @@ public class GestionnaireCompte implements Serializable{
         return query.getSingleResult();
     }
 
+    @Transactional
+    public void transferer(CompteBancaire source, CompteBancaire destination,
+            int montant) {
+        source.retirer(montant);
+        destination.deposer(montant);
+        update(source);
+        update(destination);
+    }
+
+    @Transactional
+    public CompteBancaire update(CompteBancaire compteBancaire) {
+        return em.merge(compteBancaire);
+    }
+    
+    public CompteBancaire findById(Long idCompte) {
+        return em.find(CompteBancaire.class, idCompte);
+    }
 }
