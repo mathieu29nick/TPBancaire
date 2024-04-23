@@ -16,6 +16,7 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -47,6 +48,9 @@ public class CompteBancaire implements Serializable {
     private String nom;
     @Column(name = "SOLDE")
     private int solde;
+    
+    @Version
+    private int version;
     
     @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)  
     private List<OperationBancaire> operations = new ArrayList<>();
@@ -93,6 +97,15 @@ public class CompteBancaire implements Serializable {
         this.solde = solde;
     }
 
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+    
+    
     /*public void setId(Long id) {
         this.id = id;
     }*/
