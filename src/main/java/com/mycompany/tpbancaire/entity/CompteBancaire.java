@@ -5,18 +5,23 @@
 package com.mycompany.tpbancaire.entity;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -43,15 +48,20 @@ public class CompteBancaire implements Serializable {
     @Column(name = "SOLDE")
     private int solde;
     
+    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)  
+    private List<OperationBancaire> operations = new ArrayList<>();
+    
     public CompteBancaire(){}
     
     public CompteBancaire(String nom, int solde) {
         this.nom = nom;
         this.solde = solde;
+        operations.add(new OperationBancaire("Création du compte",solde));
     }
 
     public void deposer(int montant) {
         solde += montant;
+        operations.add(new OperationBancaire("Crédit",montant));
     }
 
     public void retirer(int montant) {
@@ -60,6 +70,7 @@ public class CompteBancaire implements Serializable {
         } else {
             solde = 0;
         }
+        operations.add(new OperationBancaire("Débit",-montant));
     }
 
     public Long getId() {
@@ -109,5 +120,9 @@ public class CompteBancaire implements Serializable {
     public String toString() {
         return "com.mycompany.tpbancaire.entity.CompteBancaire[ id=" + id + " ]";
     }
-
+    
+    public List<OperationBancaire> getOperations() {  
+      return operations;  
+    } 
+    
 }
