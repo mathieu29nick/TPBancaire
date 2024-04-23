@@ -10,6 +10,7 @@ import com.mycompany.tpbancaire.service.GestionnaireCompte;
 import jakarta.inject.Named;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.OptimisticLockException;
 import java.io.Serializable;
 
 /**
@@ -75,32 +76,38 @@ public class AjoutEtRetrait implements Serializable {
     }
 
     public String valider() {
-        boolean erreur = false;
-        if (montant <= 0) {
-            Util.messageErreur("Le montant doit être supérieur à zéro !");
-            erreur=true;
-        } else {
-            if ("retrait".equals(option)) {
-                if (compte.getSolde() < montant) {
-                    Util.messageErreur("Solde insuffisant pour effectuer ce retrait !");
-                    erreur=true;
-                } else {
-                    bean.retirerArgent(compte, montant);
-                    Util.addFlashInfoMessage("Retrait de " + montant + " euros effectué avec succès sur le compte " + compte.getNom() + ".");
-                }
-            } else if ("ajouter".equals(option)) {
-                bean.deposerArgent(compte, montant);
-                Util.addFlashInfoMessage("Ajout de " + montant + " euros effectué avec succès sur le compte " + compte.getNom() + ".");
+        try {
+            boolean erreur = false;
+            if (montant <= 0) {
+                Util.messageErreur("Le montant doit être supérieur à zéro !");
+                erreur = true;
             } else {
-                Util.messageErreur("Option invalide !");
-                erreur=true;
+                if ("retrait".equals(option)) {
+                    if (compte.getSolde() < montant) {
+                        Util.messageErreur("Solde insuffisant pour effectuer ce retrait !");
+                        erreur = true;
+                    } else {
+                        bean.retirerArgent(compte, montant);
+                        Util.addFlashInfoMessage("Retrait de " + montant + " euros effectué avec succès sur le compte " + compte.getNom() + ".");
+                    }
+                } else if ("ajouter".equals(option)) {
+                    bean.deposerArgent(compte, montant);
+                    Util.addFlashInfoMessage("Ajout de " + montant + " euros effectué avec succès sur le compte " + compte.getNom() + ".");
+                } else {
+                    Util.messageErreur("Option invalide !");
+                    erreur = true;
+                }
             }
-        }
-        String link = "listeComptes?faces-redirect=true";
-        if(erreur){
+            String link = "listeComptes?faces-redirect=true";
+            if (erreur) {
+                return null;
+            }
+            return link;
+        } catch (OptimisticLockException ex) {
+            Util.messageErreur("Le compte de " + compte.getNom()
+                    + " a été modifié ou supprimé par un autre utilisateur !");
             return null;
         }
-        return link;
     }
 
 }
