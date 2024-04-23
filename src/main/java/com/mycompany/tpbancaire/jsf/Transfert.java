@@ -59,13 +59,13 @@ public class Transfert {
         CompteBancaire source=bean.findById(idSource);
         CompteBancaire destinataire=bean.findById(idDestination);
         if(source==null){
-            Util.messageErreur("Aucun compte avec cet id !\", \"Aucun compte avec cet id !\", \"form:source");
+            Util.messageErreur("Aucun compte (Source) avec cet id !");
             erreur=true;
         }else if(source.getSolde()<montant){
             Util.messageErreur("(Source) n'a pas assez de fond pour la transaction!");
             erreur=true;
         }else if(destinataire==null){
-            Util.messageErreur("Aucun compte avec cet id !\", \"Aucun compte avec cet id !\", \"form:destinataire");
+            Util.messageErreur("Aucun compte (Destinataire) avec cet id !");
             erreur=true;
         }else if(montant<0){
             Util.messageErreur("Vous devez mettre un montant correct!");
