@@ -32,7 +32,7 @@ import java.util.List;
 @Table(name = "CompteBancaire")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT c FROM CompteBancaire c"),
+    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT DISTINCT c FROM CompteBancaire c LEFT JOIN FETCH c.operations"),
     @NamedQuery(name = "CompteBancaire.findByCompteBancaireId", query = "SELECT c FROM CompteBancaire c WHERE c.id = :id")
 })
 public class CompteBancaire implements Serializable {
